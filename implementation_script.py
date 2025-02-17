@@ -16,8 +16,8 @@ def get_forecast_duration():
         return int(input("Enter custom duration in days: "))
     return options.get(choice, 30)
 
-lagos_model = joblib.load("Lagos Flood Prediction Model.pkl")
-ilorin_model = joblib.load("Ilorin Flood Prediction Model.pkl")
+lagos_model = joblib.load("models/Lagos Flood Prediction Model.pkl")
+ilorin_model = joblib.load("models/Ilorin Flood Prediction Model.pkl")
 
 future_periods = get_forecast_duration()
 
