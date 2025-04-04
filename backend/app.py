@@ -9,7 +9,7 @@ CORS(app)
 @app.route("/", strict_slashes=False)
 def home():
     return "Welcome to the flood prediction API.\
-        Access the endpoint '/api/forecast/< str:city >/< int:days >', where 'days' in the number of future days you want to get a prediction for (e.g. /api/lagos/23)"
+        Access the endpoint '/api/forecast/< str:city >/< int:days >', where 'days' in the number of future days you want to get a prediction for (e.g. /api/forecast/lagos/23)"
 
 @app.route("/api/forecast/<city>/<int:days>", methods=['GET', 'POST'], strict_slashes=False)
 def predict(city='lagos', days='5'):
