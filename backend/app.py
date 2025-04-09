@@ -27,8 +27,10 @@ if not done:
 
 @app.route("/", strict_slashes=False)
 def home():
-    return "Welcome to the flood prediction API.\
-        Access the endpoint '/api/forecast/< str:city >/< int:days >', where 'days' in the number of future days you want to get a prediction for (e.g. /api/forecast/lagos/23)"
+    return f"Welcome to the flood prediction API.\
+        Access the endpoint '/api/v2/forecast/<community>/<period>', \
+            where 'community' is one of '{communities}' \
+                and period is the future days you want to get a prediction for; can be 'today, tomorrow, week, month and year' (e.g. /api/v2/forecast/sokori/week)"
 
 @app.route("/api/forecast/<city>/<int:days>", methods=['GET', 'POST'], strict_slashes=False)
 def predict(city='lagos', days='5'):
