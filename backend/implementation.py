@@ -1,7 +1,11 @@
+import os
+import pandas as pd
+
 class Prediction:
-    periods = {"today": 1, "tomorrow": 2, "week": 7, "month": 30, "year": 365}
+    periods = {"today": 1, "tomorrow": 2, "week": 7, "month": 30, "year": 365, "two_years": 730}
     communities = [
         "Amaechi Idodo", "Fangan", "Sokori", "Ibiade", "Okpanku", "Ogwuagor", "Isheri", "Lafiagi", "Pategi"]
+    csv_base_location = "predictions"
 
     def __init__(self, community, period):
         
@@ -17,8 +21,6 @@ class Prediction:
                 self.community = names
 
     def load_dataset(self):
-        import os
-        import pandas as pd
         try:
             base_path = "../datasets"
             print("Here at load dataset")
@@ -43,7 +45,6 @@ class Prediction:
         return df
 
     def create_future_and_lags(self, df, start_date, end_date, frequency="D"):
-        import pandas as pd
         today = pd.Timestamp.today()
         end_date = today + pd.Timedelta(days=Prediction.periods[self.period] - 1)
         future = pd.date_range(start_date, end_date, freq=frequency)
@@ -67,7 +68,7 @@ class Prediction:
 
     def predict(self, df):
         import joblib as jb
-        import os
+
         try:
             path = "../models"
             print("Here at predict")
@@ -81,7 +82,6 @@ class Prediction:
             print("Something went wrong from your end:", str(e))
 
     def get_data(self, x_value, prediction):
-        import pandas as pd
         print("Here at get_data")
 
         prediction *= 10000
@@ -97,6 +97,50 @@ class Prediction:
         new_df.reset_index(inplace=True)
         value_dict = new_df.to_dict(orient='records')
 
-        print('done')
+        return value_dict
+    
+    def save_pred_to_csv(self, x_value, prediction):
+        """Save the predicted output to a csv file"""
+        print("Here at get_data_csv")
+
+        file_path = os.path.join(self.csv_base_location, f"{self.community.lower()}_pred.csv")
+        prediction *= 10000
+        new_df = pd.DataFrame({"Date": pd.to_datetime(x_value), "Prediction": prediction})
+        new_df.set_index("Date", inplace=True)
+
+        start_date = pd.Timestamp.today().normalize() # today
+        #end_date = today + pd.Timedelta(days=Prediction.periods[self.period] - 1)
+
+        new_df = new_df.loc[start_date:] # make this add today to the output
+        new_df.index = new_df.index.astype(str)
+        new_df.reset_index(inplace=True)
+        new_df.to_csv(file_path, index=False)
+        return new_df
+    
+    @classmethod
+    def get_pred_from_csv(cls, community: str):
+        """Load the predicted value from a csv file"""
+        file_path = os.path.join(cls.csv_base_location, f"{community.lower()}_pred.csv")
+
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"prediction file for {community} not found")
+
+        df = pd.read_csv(file_path)
+
+        return df
+    
+    @classmethod
+    def get_specific_pred(cls, df: pd.DataFrame, period: str):
+        """Get the prediction for a specific time frame"""
+        start_date = pd.Timestamp.today().normalize() # today
+        end_date = start_date + pd.Timedelta(days=Prediction.periods[period] - 1)
+
+        new_df = df.set_index("Date", inplace=False)
+        new_df.index = pd.to_datetime(new_df.index)
+        new_df = new_df.loc[start_date:end_date]
+        new_df.index = new_df.index.astype(str)
+        new_df.reset_index(inplace=True)
+        value_dict = new_df.to_dict(orient='records')
+
         return value_dict
 
