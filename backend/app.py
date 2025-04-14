@@ -11,9 +11,11 @@ from predict import (get_flood_pred,
 app = Flask(__name__)
 CORS(app)
 
+# "Amaechi Idodo"
 done = False
 if not done:
-    communities = ["Amaechi Idodo", "Fangan", "Sokori", "Ibiade", "Okpanku", "Ogwuagor", "Isheri", "Lafiagi", "Pategi"]
+    communities = ["Fangan", "Sokori", "Ibiade", "Okpanku", "Ogwuagor", "Isheri", "Lafiagi", "Pategi"]
+    period = ["today", "tomorrow", "week", "month", "year"]
     prediction_dict = {}
     for community in communities:
         try:
@@ -99,6 +101,15 @@ def predict_v2(community: str=None, period: str=None):
         print(community.capitalize())
         return make_response(jsonify(response), 400)
 
+@app.route("/api/v2/forecast/values", methods=['GET', 'POST'], strict_slashes=False)
+def values():
+    """Provide the values passable to the forecaste endpoint"""
+    response = {
+                "message": "These are the values to choose from.",
+                "community": communities,
+                "period": period
+            }
+    return make_response(jsonify(response))
 
 
 if __name__ == "__main__":
