@@ -14,7 +14,7 @@ CORS(app)
 # "Amaechi Idodo"
 done = False
 if not done:
-    communities = ["Fangan", "Sokori", "Ibiade", "Okpanku", "Ogwuagor", "Isheri", "Lafiagi", "Pategi"]
+    communities = ["Amaechi idodo","Fangan", "Sokori", "Ibiade", "Okpanku", "Ogwuagor", "Isheri", "Lafiagi", "Pategi"]
     period = ["today", "tomorrow", "week", "month", "year"]
     prediction_dict = {}
     for community in communities:
@@ -78,10 +78,11 @@ def predict_v1(community=None, period=None):
 
 @app.route("/api/v2/forecast/<community>/<period>", methods=['GET', 'POST'], strict_slashes=False)
 def predict_v2(community: str=None, period: str=None):
-    community = community.capitalize()
+    # community = community.capitalize()
+    # print("community is: ", community)
     if community.capitalize() in communities:
         try:
-            data = get_specific_pred(prediction_dict[community], period)
+            data = get_specific_pred(prediction_dict[community.capitalize()], period)
             response = {
                 "community": community,
                 "forecast": data
@@ -98,7 +99,7 @@ def predict_v2(community: str=None, period: str=None):
                 "status": "ERROR",
                 "message": f"Choose from the list of approved communities: {communities}"
             }
-        print(community.capitalize())
+        #print("second is", community.capitalize())
         return make_response(jsonify(response), 400)
 
 @app.route("/api/v2/forecast/values", methods=['GET', 'POST'], strict_slashes=False)
