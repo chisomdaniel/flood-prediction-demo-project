@@ -82,11 +82,12 @@ def predict_v2(community: str=None, period: str=None):
     # print("community is: ", community)
     if community.capitalize() in communities:
         try:
-            data = get_specific_pred(prediction_dict[community.capitalize()], period)
+            data, averg = get_specific_pred(prediction_dict[community.capitalize()], period)
             response = {
                 "community": community,
-                "forecast": data
+                "forecast": data,
             }
+            response.update(averg)
             return make_response(jsonify(response))
         except Exception as e:
             response = {

@@ -139,8 +139,19 @@ class Prediction:
         new_df.index = pd.to_datetime(new_df.index)
         new_df = new_df.loc[start_date:end_date]
         new_df.index = new_df.index.astype(str)
+
+        average_pred = new_df['Prediction'].mean()
+        if average_pred < 30:
+            result = 'Low Risk'
+        elif average_pred >= 30 and average_pred < 50:
+            result = 'Moderate Risk'
+        elif average_pred >= 50 and average_pred < 80:
+            result = 'High Risk'
+        elif average_pred >= 80:
+            result = 'Extreme Risk'
+
         new_df.reset_index(inplace=True)
         value_dict = new_df.to_dict(orient='records')
 
-        return value_dict
+        return value_dict, ({'average risk': average_pred, 'message': result})
 
