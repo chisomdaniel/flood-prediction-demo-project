@@ -11,19 +11,26 @@ from predict import (get_flood_pred,
 app = Flask(__name__)
 CORS(app)
 
-# "Amaechi Idodo"
 done = False
 if not done:
-    communities = ["Amaechi idodo","Fangan", "Sokori", "Ibiade", "Okpanku", "Ogwuagor", "Isheri", "Lafiagi", "Pategi"]
+    communities = ["Amaechi idodo", "Fangan", "Sokori", "Ibiade", "Okpanku", "Ogwuagor", "Isheri", "Lafiagi", "Pategi"]
     period = ["today", "tomorrow", "week", "month", "year"]
     prediction_dict = {}
+    msr_dict = {}
+    #save_pred_data(communities[1], "two_years")
     for community in communities:
         try:
             prediction_dict.update({community : get_pred_data_from_file(community)})
         except FileNotFoundError:
             save_pred_data(community, "two_years")
             prediction_dict.update({community : get_pred_data_from_file(community)})
-            # sokari_pred_df = get_pred_data_from_file(communities_test[0])
+            print("Loaded Total precipitation: ", community)
+        try:
+            msr_dict.update({community : get_pred_data_from_file(community, cls='msr')})
+        except FileNotFoundError:
+            save_pred_data(community, "two_years", cls='msr')
+            prediction_dict.update({community : get_pred_data_from_file(community, cls='msr')})
+            print("Loaded MSR: ", community)
     done = True
     print("Done loading predictions")
 
@@ -83,11 +90,15 @@ def predict_v2(community: str=None, period: str=None):
     if community.capitalize() in communities:
         try:
             data, averg = get_specific_pred(prediction_dict[community.capitalize()], period)
+            data2, averg2 = get_specific_pred(prediction_dict[community.capitalize()], period, cls='msr')
             response = {
                 "community": community,
-                "forecast": data,
+                "total_precipitation": data,
+                "averg_total_precipitation": averg,
+                "maximum_surface_runoff": data2,
+                "averg_maximum_surface_runoff": averg2,
             }
-            response.update(averg)
+            #response.update(averg)
             return make_response(jsonify(response))
         except Exception as e:
             response = {
