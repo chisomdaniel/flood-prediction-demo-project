@@ -89,14 +89,16 @@ def predict_v2(community: str=None, period: str=None):
     # print("community is: ", community)
     if community.capitalize() in communities:
         try:
-            data, averg = get_specific_pred(prediction_dict[community.capitalize()], period)
-            data2, averg2 = get_specific_pred(msr_dict[community.capitalize()], period, cls='msr')
+            data, averg, hrd = get_specific_pred(prediction_dict[community.capitalize()], period)
+            data2, averg2, hrd2 = get_specific_pred(msr_dict[community.capitalize()], period, cls='msr')
             response = {
                 "community": community,
                 "total_precipitation": data,
                 "averg_total_precipitation": averg,
+                "tp_highest_risk_day": hrd,
                 "maximum_surface_runoff": data2,
                 "averg_maximum_surface_runoff": averg2,
+                "msr_highest_risk_day": hrd2,
             }
             #response.update(averg)
             return make_response(jsonify(response))

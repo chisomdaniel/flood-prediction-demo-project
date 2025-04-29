@@ -116,7 +116,12 @@ class MSRPrediction:
         new_df = df.set_index("Date", inplace=False)
         new_df.index = pd.to_datetime(new_df.index)
         new_df = new_df.loc[start_date:end_date]
+
         new_df.index = new_df.index.astype(str)
+        new_df.reset_index(inplace=True)
+
+        highest_risk_day = new_df.loc[new_df['Prediction'].idxmax()]
+        highest_risk_day = highest_risk_day.to_dict()
 
         average_pred = new_df['Prediction'].mean()
         if average_pred < 5:
@@ -128,10 +133,9 @@ class MSRPrediction:
         elif average_pred >= 25:
             result = 'Extreme Risk'
 
-        new_df.reset_index(inplace=True)
         value_dict = new_df.to_dict(orient='records')
 
-        return value_dict, ({'average risk': average_pred, 'message': result})
+        return value_dict, ({'average risk': average_pred, 'message': result}), highest_risk_day
 
 
 
