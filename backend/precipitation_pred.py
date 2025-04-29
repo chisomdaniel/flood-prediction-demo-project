@@ -9,6 +9,7 @@ class Prediction:
     communities = [
         "Amaechi Idodo", "Fangan", "Sokori", "Ibiade", "Okpanku", "Ogwuagor", "Isheri", "Lafiagi", "Pategi"]
     csv_base_location = "predictions/total_precipitation"
+    name = "TotalP"
 
     def __init__(self, community, period):
         self.period = period

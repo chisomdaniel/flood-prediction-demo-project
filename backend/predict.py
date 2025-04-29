@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from precipitation_pred import Prediction as TPPredictin
+from precipitation_pred import Prediction as TPPrediction
 from maximum_surface_runoff import MSRPrediction
 
 def get_flood_pred(community, timeframe):
@@ -20,7 +20,7 @@ def get_flood_pred(community, timeframe):
 def save_pred_data(community, period, cls='tp'):
     """Save the prediction data for a communities in a csv file"""
 
-    Prediction = MSRPrediction if cls == 'msr' else TPPredictin
+    Prediction = MSRPrediction if cls == 'msr' else TPPrediction
     pred_obj = Prediction(community, "two_years")
     df, start_date, end_date = pred_obj.load_dataset()
     df = pred_obj.add_features(df)
@@ -35,14 +35,14 @@ def get_pred_data_from_file(community: str, cls='tp'):
     """Get the predictions for a location from a file
     Return: a pandas dataframe
     """
-    Prediction = MSRPrediction if cls == 'msr' else TPPredictin
+    Prediction = MSRPrediction if cls == 'msr' else TPPrediction
     return Prediction.get_pred_from_csv(community)
 
 def get_specific_pred(df, period, cls='tp'):
     """Get the prediction for a specific time frame
     Return: a dict value added to the response
     """
-    Prediction = MSRPrediction if cls == 'msr' else TPPredictin
+    Prediction = MSRPrediction if cls == 'msr' else TPPrediction
     return Prediction.get_specific_pred(df, period)
 
 def load_prediction_dict(communities, cls='tp'):

@@ -4,10 +4,11 @@ import joblib as jb
 import os
 
 class MSRPrediction:
-    periods = {"today": 1, "tomorrow": 2, "one week": 7, "one month": 30, "one year": 365, "year": 365, "two_years": 730}
+    periods = {"today": 1, "tomorrow": 2, "week": 7, "month": 30, "year": 365, "two_years": 730}
     communities = [
         "Amaechi Idodo", "Fangan", "Sokori", "Ibiade", "Okpanku", "Ogwuagor", "Isheri", "Lafiagi", "Pategi"]
     csv_base_location = "predictions/msr_prediction"
+    name = "MSR"
 
     def __init__(self, community, period):
         self.period = period

@@ -29,7 +29,7 @@ if not done:
             msr_dict.update({community : get_pred_data_from_file(community, cls='msr')})
         except FileNotFoundError:
             save_pred_data(community, "two_years", cls='msr')
-            prediction_dict.update({community : get_pred_data_from_file(community, cls='msr')})
+            msr_dict.update({community : get_pred_data_from_file(community, cls='msr')})
             print("Loaded MSR: ", community)
     done = True
     print("Done loading predictions")
@@ -90,7 +90,7 @@ def predict_v2(community: str=None, period: str=None):
     if community.capitalize() in communities:
         try:
             data, averg = get_specific_pred(prediction_dict[community.capitalize()], period)
-            data2, averg2 = get_specific_pred(prediction_dict[community.capitalize()], period, cls='msr')
+            data2, averg2 = get_specific_pred(msr_dict[community.capitalize()], period, cls='msr')
             response = {
                 "community": community,
                 "total_precipitation": data,
