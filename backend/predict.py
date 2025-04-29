@@ -51,3 +51,31 @@ def load_prediction_dict(communities, cls='tp'):
         prediction_dict.extend({i : get_pred_data_from_file(i, cls=cls)})
     
     return prediction_dict
+
+def check_flood_status(total_prec, msr):
+    flood_status = {'Unlikely': [],
+                    'Neutral': [],
+                    'High Chance': []}
+    for i in total_prec['Low Risk']:
+        if i in msr['Low Risk']:
+            flood_status['Unlikely'].append(i)
+        elif i in msr['Moderate Risk']:
+            flood_status['Unlikely'].append(i)
+        elif i in msr['High Risk']:
+            flood_status['High Chance'].append(i)
+    for i in total_prec['Moderate Risk']:
+        if i in msr['Low Risk']:
+            flood_status['Unlikely'].append(i)
+        elif i in msr['Moderate Risk']:
+            flood_status['Neutral'].append(i)
+        elif i in msr['High Risk']:
+            flood_status['Neutral'].append(i)
+    for i in total_prec['High Risk']:
+        if i in msr['Low Risk']:
+            flood_status['Neutral'].append(i)
+        elif i in msr['Moderate Risk']:
+            flood_status['Neutral'].append(i)
+        elif i in msr['High Risk']:
+            flood_status['High Chance'].append(i)
+    
+    return flood_status

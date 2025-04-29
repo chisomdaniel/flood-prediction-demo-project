@@ -6,7 +6,8 @@ from predict import (get_flood_pred,
                      save_pred_data,
                      get_pred_data_from_file,
                      get_specific_pred,
-                     load_prediction_dict)
+                     load_prediction_dict,
+                     check_flood_status)
 
 app = Flask(__name__)
 CORS(app)
@@ -89,8 +90,9 @@ def predict_v2(community: str=None, period: str=None):
     # print("community is: ", community)
     if community.capitalize() in communities:
         try:
-            data, averg, hrd = get_specific_pred(prediction_dict[community.capitalize()], period)
-            data2, averg2, hrd2 = get_specific_pred(msr_dict[community.capitalize()], period, cls='msr')
+            data, averg, hrd, days_pred = get_specific_pred(prediction_dict[community.capitalize()], period)
+            data2, averg2, hrd2, days_pred2 = get_specific_pred(msr_dict[community.capitalize()], period, cls='msr')
+            flood_status = check_flood_status(days_pred, days_pred2)
             response = {
                 "community": community,
                 "total_precipitation": data,
@@ -99,6 +101,7 @@ def predict_v2(community: str=None, period: str=None):
                 "maximum_surface_runoff": data2,
                 "averg_maximum_surface_runoff": averg2,
                 "msr_highest_risk_day": hrd2,
+                "daily_flood_status": flood_status,
             }
             #response.update(averg)
             return make_response(jsonify(response))

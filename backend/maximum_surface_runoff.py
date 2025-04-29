@@ -132,10 +132,30 @@ class MSRPrediction:
             result = 'High Risk'
         elif average_pred >= 25:
             result = 'Extreme Risk'
+        
+        days_prediction = {}
+        lr = [] # Low Risk
+        mr = [] # Moderate Risk
+        hr = [] # High Risk
+        for _, row in new_df.iterrows():
+            if row['Prediction'] < 5:
+                lr.append(row['Date'])
+            elif row['Prediction'] >= 5 and row['Prediction'] < 15:
+                mr.append(row['Date'])
+            elif row['Prediction'] >= 15 and row['Prediction'] < 25:
+                hr.append(row['Date'])
+            elif row['Prediction'] >= 25:
+                hr.append(row['Date'])
+
+        days_prediction['Low Risk'] = lr
+        days_prediction['Moderate Risk'] = mr
+        days_prediction['High Risk'] = hr
 
         value_dict = new_df.to_dict(orient='records')
 
-        return value_dict, ({'average risk': average_pred, 'message': result}), highest_risk_day
-
-
+        return (value_dict,
+                ({'average risk': average_pred, 'message': result}),
+                highest_risk_day,
+                days_prediction,
+                )
 
